@@ -4,9 +4,10 @@ from datetime import datetime
 import time
 
 server_socket = None
-ADDRESS = "127.0.0.1"
+ADDRESS = "192.168.10.108"
 PORT = 2468
 NUM_OF_TIMES = 1000
+DATETIME = datetime.now()
 
 OFFSETS = []
 DELAYS = []
@@ -63,6 +64,21 @@ def sync_clock():
         print("\n\nMAX OFFSET: %sns" % str(max(OFFSETS) * ONEBILLION) +
               "\nMAX DELAY: %sns" % str(max(DELAYS) * ONEBILLION))
         print("\nDone!")
+
+        # PIETRO
+        filename = "./time_offset.csv"
+        f = open(filename, "a")
+        # f.write("DATETIME,AVG_OFFSET,AVG_DELAY,MIN_OFFSET,MIN_DELAY,MAX_OFFSET,MAX_DELAY")
+        datetime = DATETIME.strftime("%d%m%Y_%H%M%S,")
+        f.write("\n" + datetime +
+                str(sum(OFFSETS) * ONEBILLION / len(OFFSETS)) + "," +
+                str(sum(DELAYS) * ONEBILLION / len(DELAYS)) + "," +
+                str(min(OFFSETS) * ONEBILLION) + "," +
+                str(min(DELAYS) * ONEBILLION) + "," +
+                str(max(OFFSETS) * ONEBILLION) + "," +
+                str(max(DELAYS) * ONEBILLION))
+        f.close()
+
     else:
         print("Error syncing times, received: " + resp.decode("utf8"))
 
